@@ -22,7 +22,6 @@
 ```cpp
 CodeGenFunction::CGFPOptionsRAII FPOptsRAII(*this, E);
 Value *V = EmitScalarExpr(E->getArg(5));
-llvm::Type *Ty = ConvertType(E->getArg(5)->getType());
 
 Value *NanLiteral = EmitScalarExpr(E->getArg(0));
 Value *InfLiteral = EmitScalarExpr(E->getArg(1));
@@ -36,34 +35,37 @@ Value *IsNormal    = Builder.createIsFPClass(V, 0b0100001000);
 Value *IsSubnormal = Builder.createIsFPClass(V, 0b0010010000);
 Value *IsZero      = Builder.createIsFPClass(V, 0b0001100000);
 
-BasicBlock *Begin = Builder.GetInsertBlock();
+BasicBlock *Entry = Builder.GetInsertBlock();
 
 // Create PHI Node
-BasicBlock *End = createBasicBlock("fpclassify_end",this->CurFn);
+BasicBlock *End = createBasicBlock("fpclassify_end",CurFn);
 Builder.SetInsertPoint(End);
-PHINode *Result = Builder.CreatePHI(ConvertType(E->getArg(0)->getType()), 5,"fpclassify_result");
+PHINode *Result = 
+Builder.CreatePHI(ConvertType(E->getArg(0)->getType()), 5,
+"fpclassify_result");
 
 // Check IsNan
-Builder.SetInsertPoint(Begin);
-BasicBlock *NotNan = createBasicBlock("fpclassify_not_nan", this->CurFn);
+Builder.SetInsertPoint(Entry);
+BasicBlock *NotNan = createBasicBlock("fpclassify_not_nan", CurFn);
 Builder.CreateCondBr(IsNan, End, NotNan);
-Result->addIncoming(NanLiteral,Begin);
+Result->addIncoming(NanLiteral,Entry);
 
 // Check IsInfinity
 Builder.SetInsertPoint(NotNan);
-BasicBlock *NotInf = createBasicBlock("fpclassify_not_inf", this->CurFn);
+BasicBlock *NotInf = createBasicBlock("fpclassify_not_inf", CurFn);
 Builder.CreateCondBr(IsInf, End, NotInf);
 Result->addIncoming(InfLiteral, NotNan);
 
 // Check IsNormal
 Builder.SetInsertPoint(NotInf);
-BasicBlock *NotNormal = createBasicBlock("fpclassify_not_normal",this->CurFn);
+BasicBlock *NotNormal = createBasicBlock("fpclassify_not_normal",CurFn);
 Builder.CreateCondBr(IsNormal, End, NotNormal);
 Result->addIncoming(NormalLiteral, NotInf);
 
 // Check IsSubnormal
 Builder.SetInsertPoint(NotNormal);
-BasicBlock *NotSubnormal = createBasicBlock("fpclassify_not_subnormal", this->CurFn);
+BasicBlock *NotSubnormal =
+createBasicBlock("fpclassify_not_subnormal", CurFn);
 Builder.CreateCondBr(IsSubnormal, End, NotSubnormal);
 Result->addIncoming(SubnormalLiteral, NotNormal);
 

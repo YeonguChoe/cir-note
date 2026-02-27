@@ -20,6 +20,74 @@
 ```
 
 ```cpp
+  case Builtin::BI__builtin_fpclassify: {
+    CIRGenFunction::CIRGenFPOptionsRAII FPOptsRAII(*this, E);
+    mlir::Location Loc = getLoc(E->getBeginLoc());
+
+    mlir::Value NanLiteral = emitScalarExpr(E->getArg(0));
+    mlir::Value InfLiteral = emitScalarExpr(E->getArg(1));
+    mlir::Value NormalLiteral = emitScalarExpr(E->getArg(2));
+    mlir::Value SubnormalLiteral = emitScalarExpr(E->getArg(3));
+    mlir::Value ZeroLiteral = emitScalarExpr(E->getArg(4));
+    mlir::Value V = emitScalarExpr(E->getArg(5));
+
+    mlir::Value IsNan = builder.createIsFPClass(Loc, V, FPClassTest::fcNan);
+    mlir::Value IsInf = builder.createIsFPClass(Loc, V, FPClassTest::fcInf);
+    mlir::Value IsNormal =
+        builder.createIsFPClass(Loc, V, FPClassTest::fcNormal);
+    mlir::Value IsSubnormal =
+        builder.createIsFPClass(Loc, V, FPClassTest::fcSubnormal);
+
+    mlir::Block *EntryBlock = builder.getInsertionBlock();
+    mlir::Region *Region = EntryBlock->getParent();
+
+    mlir::Block *InfBlock = builder.createBlock(Region, Region->end());
+    mlir::Block *NormalBlock = builder.createBlock(Region, Region->end());
+    mlir::Block *SubnormalBlock = builder.createBlock(Region, Region->end());
+    mlir::Block *ZeroBlock = builder.createBlock(Region, Region->end());
+    
+    mlir::Block *EndBlock = builder.createBlock(Region, Region->end());
+    mlir::Type ResultTy = ConvertType(E->getType());
+    EndBlock->addArgument(ResultTy, Loc);
+
+    // ^Entry: if NaN -> End(NanLiteral), else -> InfBlock
+    builder.setInsertionPointToEnd(EntryBlock);
+    builder.create<mlir::cir::BrCondOp>(Loc, IsNan, EndBlock,
+                                           mlir::ValueRange{NanLiteral},
+                                           InfBlock, mlir::ValueRange{});
+
+    // ^InfBlock: if Inf -> End(InfLiteral), else -> NormalBlock
+    builder.setInsertionPointToEnd(InfBlock);
+    builder.create<mlir::cir::BrCondOp>(Loc, IsInf, EndBlock,
+                                           mlir::ValueRange{InfLiteral},
+                                           NormalBlock, mlir::ValueRange{});
+
+    // ^NormalBlock: if Normal -> End(NormalLiteral), else -> SubnormalBlock
+    builder.setInsertionPointToEnd(NormalBlock);
+    builder.create<mlir::cir::BrCondOp>(Loc, IsNormal, EndBlock,
+                                           mlir::ValueRange{NormalLiteral},
+                                           SubnormalBlock, mlir::ValueRange{});
+
+    // ^SubnormalBlock: if Subnormal -> End(SubnormalLiteral), else -> ZeroBlock
+    builder.setInsertionPointToEnd(SubnormalBlock);
+    builder.create<mlir::cir::BrCondOp>(Loc, IsSubnormal, EndBlock,
+                                           mlir::ValueRange{SubnormalLiteral},
+                                           ZeroBlock, mlir::ValueRange{});
+
+    // ^ZeroBlock: unconditionally -> End(ZeroLiteral)
+    builder.setInsertionPointToEnd(ZeroBlock);
+    builder.create<mlir::cir::BrOp>(Loc, EndBlock,
+                                       mlir::ValueRange{ZeroLiteral});
+
+    // ^EndBlock(x)
+    builder.setInsertionPointToEnd(EndBlock);
+    mlir::Value Result = EndBlock->getArgument(0);
+
+    return RValue::get(Result);
+  }
+```
+
+```cpp
     CodeGenFunction::CGFPOptionsRAII FPOptsRAII(*this, E);
     Value *V = EmitScalarExpr(E->getArg(5));
 

@@ -42,7 +42,7 @@ ninja -C build clang
     mlir::Value V = emitScalarExpr(e->getArg(5));
 
     mlir::Type ResultTy =
-        convertType(e->getType()); // ConvertType -> convertType
+        convertType(e->getType());
     mlir::Block *EntryBlock = builder.getInsertionBlock();
     mlir::Region *Region = EntryBlock->getParent();
 

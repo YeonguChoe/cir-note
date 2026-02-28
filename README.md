@@ -153,7 +153,7 @@ ninja -C build clang
 ```
 
 ### Command
-#### Build C/C++ file
+#### Build C/C++ file to executable file
 ```bash
 clang -fclangir main.c -o main
 ```

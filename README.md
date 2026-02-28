@@ -29,6 +29,8 @@ ninja -C build clang
 /tmp/install-llvm/bin/clang -fclangir -S -emit-llvm main.c
 ```
 
+### CIR Project
+
 ```cpp
   case Builtin::BI__builtin_fpclassify: {
     CIRGenFunction::CIRGenFPOptionsRAII FPOptsRAII(*this, e);

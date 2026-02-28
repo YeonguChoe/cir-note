@@ -37,7 +37,7 @@ ninja -C build clang
     mlir::Location Loc = getLoc(e->getBeginLoc());
 
     mlir::Value NanLiteral = emitScalarExpr(e->getArg(0));
-    mlir::Value InfLiteral = emitScalarExpr(e->getArg(1));
+    mlir::Value InfinityLiteral = emitScalarExpr(e->getArg(1));
     mlir::Value NormalLiteral = emitScalarExpr(e->getArg(2));
     mlir::Value SubnormalLiteral = emitScalarExpr(e->getArg(3));
     mlir::Value ZeroLiteral = emitScalarExpr(e->getArg(4));
@@ -48,38 +48,37 @@ ninja -C build clang
     mlir::Region *Region = EntryBlock->getParent();
 
     // Create Blocks
-    mlir::Block *InfBlock = builder.createBlock(Region, Region->end());
+    mlir::Block *InfinityBlock = builder.createBlock(Region, Region->end());
     mlir::Block *NormalBlock = builder.createBlock(Region, Region->end());
     mlir::Block *SubnormalBlock = builder.createBlock(Region, Region->end());
     mlir::Block *ZeroBlock = builder.createBlock(Region, Region->end());
     mlir::Block *EndBlock = builder.createBlock(Region, Region->end());
     EndBlock->addArgument(ResultTy, Loc);
 
-    // ^EntryBlock: if NaN -> EndBlock(NanLiteral), else -> InfBlock
+    // ^EntryBlock
     builder.setInsertionPointToEnd(EntryBlock);
     mlir::Value IsNan = builder.createIsFPClass(Loc, V, cir::FPClassTest::Nan);
     cir::BrCondOp::create(builder, Loc, IsNan, EndBlock,
-                          InfBlock, // destTrue, destFalse
+                          InfinityBlock, // destTrue, destFalse
                           mlir::ValueRange{NanLiteral},
                           mlir::ValueRange{}); // operandsTrue, operandsFalse
 
-    // ^InfBlock: if Inf -> EndBlock(InfLiteral), else -> NormalBlock
-    builder.setInsertionPointToEnd(InfBlock);
-    mlir::Value IsInf =
+    // ^InfinityBlock
+    builder.setInsertionPointToEnd(InfinityBlock);
+    mlir::Value IsInfinity =
         builder.createIsFPClass(Loc, V, cir::FPClassTest::Infinity);
-    cir::BrCondOp::create(builder, Loc, IsInf, EndBlock, NormalBlock,
-                          mlir::ValueRange{InfLiteral}, mlir::ValueRange{});
+    cir::BrCondOp::create(builder, Loc, IsInfinity, EndBlock, NormalBlock,
+                          mlir::ValueRange{InfinityLiteral},
+                          mlir::ValueRange{});
 
-    // ^NormalBlock: if Normal -> EndBlock(NormalLiteral), else ->
-    // SubnormalBlock
+    // ^NormalBlock
     builder.setInsertionPointToEnd(NormalBlock);
     mlir::Value IsNormal =
         builder.createIsFPClass(Loc, V, cir::FPClassTest::Normal);
     cir::BrCondOp::create(builder, Loc, IsNormal, EndBlock, SubnormalBlock,
                           mlir::ValueRange{NormalLiteral}, mlir::ValueRange{});
 
-    // ^SubnormalBlock: if Subnormal -> EndBlock(SubnormalLiteral), else ->
-    // ZeroBlock
+    // ^SubnormalBlock
     builder.setInsertionPointToEnd(SubnormalBlock);
     mlir::Value IsSubnormal =
         builder.createIsFPClass(Loc, V, cir::FPClassTest::Subnormal);
@@ -87,7 +86,7 @@ ninja -C build clang
                           mlir::ValueRange{SubnormalLiteral},
                           mlir::ValueRange{});
 
-    // ^ZeroBlock: unconditional -> EndBlock(ZeroLiteral)
+    // ^ZeroBlock
     builder.setInsertionPointToEnd(ZeroBlock);
     cir::BrOp::create(builder, Loc, EndBlock, mlir::ValueRange{ZeroLiteral});
 
@@ -97,16 +96,6 @@ ninja -C build clang
 
     return RValue::get(Result);
   }
-```
-
-- CIR Test (builtins-floating-point.c)
-```c
-int fpclassify(float f) {
-  return __builtin_fpclassify(0, 1, 2, 3, 4, f);
-  // CIR: %{{.*}} = cir.is_fp_class %{{.*}}, fcNan : (!cir.float) -> !cir.bool
-  // LLVM: %{{.*}} = call i1 @llvm.is.fpclass.f32(float %{{.*}}, i32 {{.*}})
-  // OGCG: %{{.*}} = fcmp uno float %{{.*}}, %{{.*}}
-}
 ```
 
 ### LLVM project

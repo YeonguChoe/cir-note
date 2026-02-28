@@ -151,3 +151,24 @@ ninja -C build clang
     Builder.SetInsertPoint(End);
     return RValue::get(Result);
 ```
+
+### Command
+#### Build C/C++ file
+```bash
+clang -fclangir main.c -o main
+```
+
+#### Build CIR file
+```bash
+clang -fclangir -emit-cir main.c -o main.cir
+```
+
+#### Build LLVM IR file
+```bash
+clang -fclangir -emit-llvm -S main.c -o main.ll
+```
+
+#### Build LLVM IR file to executable file
+```bash
+clang main.ll -o main
+```

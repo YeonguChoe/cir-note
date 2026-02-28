@@ -101,19 +101,14 @@ ninja -C build clang
 ### LLVM project
 
 ```cpp
+  case Builtin::BI__builtin_fpclassify: {
     CodeGenFunction::CGFPOptionsRAII FPOptsRAII(*this, E);
     Value *V = EmitScalarExpr(E->getArg(5));
 
-    Value *NanLiteral = EmitScalarExpr(E->getArg(0));
-    Value *InfLiteral = EmitScalarExpr(E->getArg(1));
-    Value *NormalLiteral = EmitScalarExpr(E->getArg(2));
-    Value *SubnormalLiteral = EmitScalarExpr(E->getArg(3));
-    Value *ZeroLiteral = EmitScalarExpr(E->getArg(4));
-
-    Value *IsNan = Builder.createIsFPClass(V, 0b0000000011);
-    Value *IsInf = Builder.createIsFPClass(V, 0b1000000100);
-    Value *IsNormal = Builder.createIsFPClass(V, 0b0100001000);
-    Value *IsSubnormal = Builder.createIsFPClass(V, 0b0010010000);
+    Value *IsNan = Builder.createIsFPClass(V, FPClassTest::fcNan);
+    Value *IsInf = Builder.createIsFPClass(V, FPClassTest::fcInf);
+    Value *IsNormal = Builder.createIsFPClass(V, FPClassTest::fcNormal);
+    Value *IsSubnormal = Builder.createIsFPClass(V, FPClassTest::fcSubnormal);
 
     BasicBlock *Entry = Builder.GetInsertBlock();
 
@@ -126,18 +121,21 @@ ninja -C build clang
     Builder.SetInsertPoint(Entry);
     BasicBlock *NotNan = createBasicBlock("fpclassify_not_nan", CurFn);
     Builder.CreateCondBr(IsNan, End, NotNan);
+    Value *NanLiteral = EmitScalarExpr(E->getArg(0));
     Result->addIncoming(NanLiteral, Entry);
 
     // Check if V is infinity
     Builder.SetInsertPoint(NotNan);
     BasicBlock *NotInf = createBasicBlock("fpclassify_not_inf", CurFn);
     Builder.CreateCondBr(IsInf, End, NotInf);
+    Value *InfLiteral = EmitScalarExpr(E->getArg(1));
     Result->addIncoming(InfLiteral, NotNan);
 
     // Check if V is normal
     Builder.SetInsertPoint(NotInf);
     BasicBlock *NotNormal = createBasicBlock("fpclassify_not_normal", CurFn);
     Builder.CreateCondBr(IsNormal, End, NotNormal);
+    Value *NormalLiteral = EmitScalarExpr(E->getArg(2));
     Result->addIncoming(NormalLiteral, NotInf);
 
     // Check if V is subnormal
@@ -145,15 +143,18 @@ ninja -C build clang
     BasicBlock *NotSubnormal =
         createBasicBlock("fpclassify_not_subnormal", CurFn);
     Builder.CreateCondBr(IsSubnormal, End, NotSubnormal);
+    Value *SubnormalLiteral = EmitScalarExpr(E->getArg(3));
     Result->addIncoming(SubnormalLiteral, NotNormal);
 
     // If V is not one of the above, it is zero
     Builder.SetInsertPoint(NotSubnormal);
     Builder.CreateBr(End);
+    Value *ZeroLiteral = EmitScalarExpr(E->getArg(4));
     Result->addIncoming(ZeroLiteral, NotSubnormal);
 
     Builder.SetInsertPoint(End);
     return RValue::get(Result);
+  }
 ```
 
 ### Command

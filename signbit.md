@@ -10,3 +10,49 @@ return RValue::get(builder.createBoolToInt(signbit, convertType(e->getType())));
 ```
 
 
+### test
+
+```c
+// RUN: %clang_cc1 -fclangir -emit-cir %s -o %t.cir
+// RUN: FileCheck --input-file=%t.cir %s -check-prefix=CIR
+// RUN: %clang_cc1 -fclangir -emit-llvm %s -o %t.cir.ll
+// RUN: FileCheck --input-file=%t.cir.ll %s -check-prefix=LLVM
+// RUN: %clang_cc1 -emit-llvm %s -o %t.ll
+// RUN: FileCheck --input-file=%t.ll %s -check-prefix=OGCG
+
+int test_signbit_float(float x) {
+  return __builtin_signbit(x);
+}
+// CIR: cir.signbit %{{.*}} : !cir.float -> !cir.bool
+// LLVM: call i1 @llvm.is.fpclass.f32(float {{.*}}, i32 128)
+// OGCG: call i1 @llvm.is.fpclass.f32(float {{.*}}, i32 128)
+
+
+int test_signbit_double(double x) {
+  return __builtin_signbit(x);
+}
+// CIR: cir.signbit %{{.*}} : !cir.double -> !cir.bool
+// LLVM:       call i1 @llvm.is.fpclass.f64(double {{.*}}, i32 128)
+// OGCG:       call i1 @llvm.is.fpclass.f64(double {{.*}}, i32 128)
+
+int test_signbit_long_double(long double x) {
+  return __builtin_signbit(x);
+}
+// CIR: cir.signbit %{{.*}} : !cir.long_double<!cir.f80> -> !cir.bool
+// LLVM: call i1 @llvm.is.fpclass.f80(x86_fp80 {{.*}}, i32 128)
+// OGCG: call i1 @llvm.is.fpclass.f80(x86_fp80 {{.*}}, i32 128)
+
+int test_signbitf(float x) {
+  return __builtin_signbitf(x);
+}
+// CIR: cir.signbit %{{.*}} : !cir.float -> !cir.bool
+// LLVM: call i1 @llvm.is.fpclass.f32(float {{.*}}, i32 128)
+// OGCG: call i1 @llvm.is.fpclass.f32(float {{.*}}, i32 128)
+
+int test_signbitl(long double x) {
+  return __builtin_signbitl(x);
+}
+// CIR: cir.signbit %{{.*}} : !cir.long_double<!cir.f80> -> !cir.bool
+// LLVM: call i1 @llvm.is.fpclass.f80(x86_fp80 {{.*}}, i32 128)
+// OGCG: call i1 @llvm.is.fpclass.f80(x86_fp80 {{.*}}, i32 128)
+```

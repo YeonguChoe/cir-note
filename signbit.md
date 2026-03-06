@@ -55,7 +55,10 @@ int test_signbitf(float x) {
   return __builtin_signbitf(x);
 }
 // CIR: cir.signbit %{{.*}} : !cir.float -> !cir.bool
-// LLVM: call i1 @llvm.is.fpclass.f32(float {{.*}}, i32 128)
+// LLVM:       bitcast float {{.*}} to i32
+// LLVM:       icmp slt i32 {{.*}}, 0
+// LLVM:       zext i1 {{.*}} to i32
+// LLVM:       ret i32
 // OGCG: call i1 @llvm.is.fpclass.f32(float {{.*}}, i32 128)
 
 int test_signbitl(long double x) {

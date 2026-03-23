@@ -201,6 +201,22 @@ void test_fpclassify_inf(){
 // LLVM: [[BB_RET]]:
 // LLVM-NEXT: %[[PHI3:.+]] = phi i32 [ %[[PHI2]], %[[BB_CONT2]] ], [ 96, %[[BB_ZERO]] ]
 // LLVM-NEXT: br label
+
+// OGCG: %[[CMP_ZERO:.+]] = fcmp oeq float %[[VAL:.+]],
+// OGCG-NEXT: br i1 %[[CMP_ZERO]], label %[[BB_RET:.+]], label %[[BB_NOT_ZERO:.+]]
+// OGCG: [[BB_RET]]:
+// OGCG-NEXT: %[[PHI:.+]] = phi i32 [ 96, %[[BB_ENTRY:.+]] ], [ 3, %[[BB_NOT_ZERO]] ], [ 516, %[[BB_NOT_NAN:.+]] ], [ %[[SEL:.+]], %[[BB_NOT_INF:.+]] ]
+// OGCG: [[BB_NOT_ZERO]]:
+// OGCG-NEXT: %[[CMP_NAN:.+]] = fcmp uno float %[[VAL]], %[[VAL]]
+// OGCG-NEXT: br i1 %[[CMP_NAN]], label %[[BB_RET]], label %[[BB_NOT_NAN]]
+// OGCG: [[BB_NOT_NAN]]:
+// OGCG-NEXT: %[[FABS:.+]] = call float @llvm.fabs.f32(float %[[VAL]])
+// OGCG-NEXT: %[[CMP_INF:.+]] = fcmp oeq float %[[FABS]],
+// OGCG-NEXT: br i1 %[[CMP_INF]], label %[[BB_RET]], label %[[BB_NOT_INF]]
+// OGCG: [[BB_NOT_INF]]:
+// OGCG-NEXT: %[[CMP_NORMAL:.+]] = fcmp uge float %[[FABS]],
+// OGCG-NEXT: %[[SEL]] = select i1 %[[CMP_NORMAL]], i32 264, i32 144
+// OGCG-NEXT: br label %[[BB_RET]]
 }
 
 void test_fpclassify_normal(){
@@ -254,6 +270,22 @@ void test_fpclassify_normal(){
 // LLVM-NEXT: %[[PHI_FINAL:.*]] = phi i32 [ %[[PHI_NAN_SEL]], %[[BB_CONT2]] ], [ 96, %[[BB_ZERO]] ]
 // LLVM-NEXT: br label %[[BB_EXIT:.*]]
 // LLVM: [[BB_EXIT]]:
+
+// OGCG: %[[CMP_ZERO:.+]] = fcmp oeq float %[[VAL:.+]],
+// OGCG-NEXT: br i1 %[[CMP_ZERO]], label %[[BB_RET:.+]], label %[[BB_NOT_ZERO:.+]]
+// OGCG: [[BB_RET]]:
+// OGCG-NEXT: %[[PHI:.+]] = phi i32 [ 96, %[[BB_ENTRY:.+]] ], [ 3, %[[BB_NOT_ZERO]] ], [ 516, %[[BB_NOT_NAN:.+]] ], [ %[[SEL:.+]], %[[BB_NOT_INF:.+]] ]
+// OGCG: [[BB_NOT_ZERO]]:
+// OGCG-NEXT: %[[CMP_NAN:.+]] = fcmp uno float %[[VAL]], %[[VAL]]
+// OGCG-NEXT: br i1 %[[CMP_NAN]], label %[[BB_RET]], label %[[BB_NOT_NAN]]
+// OGCG: [[BB_NOT_NAN]]:
+// OGCG-NEXT: %[[FABS:.+]] = call float @llvm.fabs.f32(float %[[VAL]])
+// OGCG-NEXT: %[[CMP_INF:.+]] = fcmp oeq float %[[FABS]],
+// OGCG-NEXT: br i1 %[[CMP_INF]], label %[[BB_RET]], label %[[BB_NOT_INF]]
+// OGCG: [[BB_NOT_INF]]:
+// OGCG-NEXT: %[[CMP_NORMAL:.+]] = fcmp uge float %[[FABS]],
+// OGCG-NEXT: %[[SEL]] = select i1 %[[CMP_NORMAL]], i32 264, i32 144
+// OGCG-NEXT: br label %[[BB_RET]]
 }
 
 void test_fpclassify_subnormal(){
@@ -307,6 +339,22 @@ void test_fpclassify_subnormal(){
 // LLVM-NEXT: %[[PHI_FINAL:.*]] = phi i32 [ %[[PHI_NAN_SEL]], %[[BB_CONT2]] ], [ 96, %[[BB_ZERO]] ]
 // LLVM-NEXT: br label %[[BB_EXIT:.*]]
 // LLVM: [[BB_EXIT]]:
+
+// OGCG: %[[CMP_ZERO:.+]] = fcmp oeq float %[[VAL:.+]],
+// OGCG-NEXT: br i1 %[[CMP_ZERO]], label %[[BB_RET:.+]], label %[[BB_NOT_ZERO:.+]]
+// OGCG: [[BB_RET]]:
+// OGCG-NEXT: %[[PHI:.+]] = phi i32 [ 96, %[[BB_ENTRY:.+]] ], [ 3, %[[BB_NOT_ZERO]] ], [ 516, %[[BB_NOT_NAN:.+]] ], [ %[[SEL:.+]], %[[BB_NOT_INF:.+]] ]
+// OGCG: [[BB_NOT_ZERO]]:
+// OGCG-NEXT: %[[CMP_NAN:.+]] = fcmp uno float %[[VAL]], %[[VAL]]
+// OGCG-NEXT: br i1 %[[CMP_NAN]], label %[[BB_RET]], label %[[BB_NOT_NAN]]
+// OGCG: [[BB_NOT_NAN]]:
+// OGCG-NEXT: %[[FABS:.+]] = call float @llvm.fabs.f32(float %[[VAL]])
+// OGCG-NEXT: %[[CMP_INF:.+]] = fcmp oeq float %[[FABS]],
+// OGCG-NEXT: br i1 %[[CMP_INF]], label %[[BB_RET]], label %[[BB_NOT_INF]]
+// OGCG: [[BB_NOT_INF]]:
+// OGCG-NEXT: %[[CMP_NORMAL:.+]] = fcmp uge float %[[FABS]],
+// OGCG-NEXT: %[[SEL]] = select i1 %[[CMP_NORMAL]], i32 264, i32 144
+// OGCG-NEXT: br label %[[BB_RET]]
 }
 
 void test_fpclassify_zero(){
@@ -360,6 +408,23 @@ void test_fpclassify_zero(){
 // LLVM-NEXT: %[[PHI_FINAL:.*]] = phi i32 [ %[[PHI_NAN_SEL]], %[[BB_CONT2]] ], [ 96, %[[BB_ZERO]] ]
 // LLVM-NEXT: br label %[[BB_EXIT:.*]]
 // LLVM: [[BB_EXIT]]:
+
+// OGCG: %[[CMP_ZERO:.+]] = fcmp oeq float %[[VAL:.+]],
+// OGCG-NEXT: br i1 %[[CMP_ZERO]], label %[[BB_RET:.+]], label %[[BB_NOT_ZERO:.+]]
+// OGCG: [[BB_RET]]:
+// OGCG-NEXT: %[[PHI:.+]] = phi i32 [ 96, %[[BB_ENTRY:.+]] ], [ 3, %[[BB_NOT_ZERO]] ], [ 516, %[[BB_NOT_NAN:.+]] ], [ %[[SEL:.+]], %[[BB_NOT_INF:.+]] ]
+// OGCG: [[BB_NOT_ZERO]]:
+// OGCG-NEXT: %[[CMP_NAN:.+]] = fcmp uno float %[[VAL]], %[[VAL]]
+// OGCG-NEXT: br i1 %[[CMP_NAN]], label %[[BB_RET]], label %[[BB_NOT_NAN]]
+// OGCG: [[BB_NOT_NAN]]:
+// OGCG-NEXT: %[[FABS:.+]] = call float @llvm.fabs.f32(float %[[VAL]])
+// OGCG-NEXT: %[[CMP_INF:.+]] = fcmp oeq float %[[FABS]],
+// OGCG-NEXT: br i1 %[[CMP_INF]], label %[[BB_RET]], label %[[BB_NOT_INF]]
+// OGCG: [[BB_NOT_INF]]:
+// OGCG-NEXT: %[[CMP_NORMAL:.+]] = fcmp uge float %[[FABS]],
+// OGCG-NEXT: %[[SEL]] = select i1 %[[CMP_NORMAL]], i32 264, i32 144
+// OGCG-NEXT: br label %[[BB_RET]]
 }
+
 ```
 

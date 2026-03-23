@@ -119,37 +119,37 @@ void test_fpclassify_inf(){
 // CIR: %[[SUBNORMAL_VAL:.+]] = cir.const #cir.int<144> : !s32i
 // CIR: cir.select if %[[IS_NORMAL]] then %[[NORMAL_VAL]] else %[[SUBNORMAL_VAL]] : (!cir.bool, !s32i, !s32i) -> !s32i
 
-// LLVM: %[[VAL:.+]] = {{.*}}
-// LLVM: %[[IS_INF_OR_NAN:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 96)
-// LLVM-NEXT: br i1 %[[IS_INF_OR_NAN]], label %[[BB_INF_OR_NAN:.+]], label %[[BB_NOT_INF_OR_NAN:.+]]
-// LLVM: [[BB_INF_OR_NAN]]:
-// LLVM-NEXT: br label %[[BB_RET:.+]]
-// LLVM: [[BB_NOT_INF_OR_NAN]]:
-// LLVM-NEXT: %[[IS_DENORM:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 3)
-// LLVM-NEXT: br i1 %[[IS_DENORM]], label %[[BB_DENORM:.+]], label %[[BB_NOT_DENORM:.+]]
-// LLVM: [[BB_DENORM]]:
-// LLVM-NEXT: br label %[[BB_MERGE1:.+]]
-// LLVM: [[BB_NOT_DENORM]]:
-// LLVM-NEXT: %[[IS_ZERO:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 516)
+// LLVM: %[[VAL:.+]] = load float, ptr
+// LLVM-NEXT: %[[IS_ZERO:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 96)
 // LLVM-NEXT: br i1 %[[IS_ZERO]], label %[[BB_ZERO:.+]], label %[[BB_NOT_ZERO:.+]]
 // LLVM: [[BB_ZERO]]:
-// LLVM-NEXT: br label %[[BB_MERGE2:.+]]
+// LLVM-NEXT: br label %[[BB_RET:.+]]
 // LLVM: [[BB_NOT_ZERO]]:
+// LLVM-NEXT: %[[IS_NAN:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 3)
+// LLVM-NEXT: br i1 %[[IS_NAN]], label %[[BB_NAN:.+]], label %[[BB_NOT_NAN:.+]]
+// LLVM: [[BB_NAN]]:
+// LLVM-NEXT: br label %[[BB_MERGE1:.+]]
+// LLVM: [[BB_NOT_NAN]]:
+// LLVM-NEXT: %[[IS_INF:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 516)
+// LLVM-NEXT: br i1 %[[IS_INF]], label %[[BB_INF:.+]], label %[[BB_NOT_INF:.+]]
+// LLVM: [[BB_INF]]:
+// LLVM-NEXT: br label %[[BB_MERGE2:.+]]
+// LLVM: [[BB_NOT_INF]]:
 // LLVM-NEXT: %[[IS_NORMAL:.+]] = call i1 @llvm.is.fpclass.f32(float %[[VAL]], i32 264)
-// LLVM-NEXT: %[[SEL:.+]] = select i1 %[[IS_NORMAL]], i32 4, i32 3
+// LLVM-NEXT: %[[SEL:.+]] = select i1 %[[IS_NORMAL]], i32 264, i32 144
 // LLVM-NEXT: br label %[[BB_MERGE2]]
 // LLVM: [[BB_MERGE2]]:
-// LLVM-NEXT: %[[PHI1:.+]] = phi i32 [ %[[SEL]], %[[BB_NOT_ZERO]] ], [ 1, %[[BB_ZERO]] ]
+// LLVM-NEXT: %[[PHI1:.+]] = phi i32 [ %[[SEL]], %[[BB_NOT_INF]] ], [ 516, %[[BB_INF]] ]
 // LLVM-NEXT: br label %[[BB_CONT1:.+]]
 // LLVM: [[BB_CONT1]]:
 // LLVM-NEXT: br label %[[BB_MERGE1]]
 // LLVM: [[BB_MERGE1]]:
-// LLVM-NEXT: %[[PHI2:.+]] = phi i32 [ %[[PHI1]], %[[BB_CONT1]] ], [ 0, %[[BB_DENORM]] ]
+// LLVM-NEXT: %[[PHI2:.+]] = phi i32 [ %[[PHI1]], %[[BB_CONT1]] ], [ 3, %[[BB_NAN]] ]
 // LLVM-NEXT: br label %[[BB_CONT2:.+]]
 // LLVM: [[BB_CONT2]]:
 // LLVM-NEXT: br label %[[BB_RET]]
 // LLVM: [[BB_RET]]:
-// LLVM-NEXT: %[[PHI3:.+]] = phi i32 [ %[[PHI2]], %[[BB_CONT2]] ], [ 2, %[[BB_INF_OR_NAN]] ]
+// LLVM-NEXT: %[[PHI3:.+]] = phi i32 [ %[[PHI2]], %[[BB_CONT2]] ], [ 96, %[[BB_ZERO]] ]
 // LLVM-NEXT: br label
 }
 

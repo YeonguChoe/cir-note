@@ -76,12 +76,29 @@
 // RUN: %clang_cc1 -triple x86_64-unknown-linux-gnu -emit-llvm %s -o %t.ll
 // RUN: FileCheck %s -check-prefix=OGCG --input-file %t.ll
 
-#include <math.h>
+#define FP_NAN       3
+#define FP_INFINITE  516
+#define FP_ZERO      96
+#define FP_SUBNORMAL 144
+#define FP_NORMAL    264
 
 void test_fpclassify_nan(){
     float nanValue = 0.0f / 0.0f;
     int nanResult = __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
                                          FP_SUBNORMAL, FP_ZERO, nanValue);
+// CIR: %[[VAL:.+]] = cir.is_fp_class %{{.+}}, fcZero : (!cir.float) -> !cir.bool
+// CIR: cir.ternary(%[[VAL]], true {
+// CIR: cir.const #cir.int<96> : !s32i
+// CIR: %[[IS_NAN:.+]] = cir.is_fp_class %{{.+}}, fcNan : (!cir.float) -> !cir.bool
+// CIR: cir.ternary(%[[IS_NAN]], true {
+// CIR: cir.const #cir.int<3> : !s32i
+// CIR: %[[IS_INF:.+]] = cir.is_fp_class %{{.+}}, fcInf : (!cir.float) -> !cir.bool
+// CIR: cir.ternary(%[[IS_INF]], true {
+// CIR: cir.const #cir.int<516> : !s32i
+// CIR: %[[IS_NORMAL:.+]] = cir.is_fp_class %{{.+}}, fcNormal : (!cir.float) -> !cir.bool
+// CIR: %[[CONST4:.+]] = cir.const #cir.int<264> : !s32i
+// CIR: %[[CONST3:.+]] = cir.const #cir.int<144> : !s32i
+// CIR: cir.select if %[[IS_NORMAL]] then %[[CONST4]] else %[[CONST3]] : (!cir.bool, !s32i, !s32i) -> !s32i
 }
 
 void test_fpclassify_inf(){

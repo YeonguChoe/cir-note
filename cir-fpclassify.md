@@ -84,7 +84,7 @@
 
 void test_fpclassify_nan(){
     float nanValue = 0.0f / 0.0f;
-    int nanResult = __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
+    __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
                                          FP_SUBNORMAL, FP_ZERO, nanValue);
 // CIR: %[[VAL:.+]] = cir.is_fp_class %{{.+}}, fcZero : (!cir.float) -> !cir.bool
 // CIR: cir.ternary(%[[VAL]], true {
@@ -103,20 +103,20 @@ void test_fpclassify_nan(){
 
 void test_fpclassify_inf(){
     float infValue = 1.0f / 0.0f;
-    int infResult = __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
+    __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
                                          FP_SUBNORMAL, FP_ZERO, infValue);
 }
 
 void test_fpclassify_normal(){
     float normalValue = 1.0f;
-    int normalResult = __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
+    __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
                                             FP_SUBNORMAL, FP_ZERO, normalValue);
 }
 
 
 void test_fpclassify_subnormal(){
     float subnormalValue = 1.0e-40f;
-    int subnormalResult = __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
+    __builtin_fpclassify(FP_NAN, FP_INFINITE, FP_NORMAL,
                                                FP_SUBNORMAL, FP_ZERO, subnormalValue);
 }
 

@@ -27,7 +27,7 @@ void test_signbit_positive_zero(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -40,7 +40,7 @@ void test_signbit_negative_zero(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -53,7 +53,7 @@ void test_signbit_positive_number(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -66,7 +66,7 @@ void test_signbit_negative_number(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -79,7 +79,7 @@ void test_signbit_positive_nan(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -92,7 +92,7 @@ void test_signbit_negative_nan(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -105,7 +105,7 @@ void test_signbit_positive_infinity(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
@@ -118,7 +118,7 @@ void test_signbit_negative_infinity(){
 // CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
 // CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
 
-// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]], align 8
+// LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}

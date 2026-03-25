@@ -31,6 +31,11 @@ void test_signbit_positive_zero(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_negative_zero(){
@@ -44,6 +49,11 @@ void test_signbit_negative_zero(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_positive_number(){
@@ -57,6 +67,11 @@ void test_signbit_positive_number(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_negative_number(){
@@ -70,6 +85,11 @@ void test_signbit_negative_number(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_positive_nan(){
@@ -83,6 +103,11 @@ void test_signbit_positive_nan(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_negative_nan(){
@@ -96,6 +121,11 @@ void test_signbit_negative_nan(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_positive_infinity(){
@@ -109,6 +139,11 @@ void test_signbit_positive_infinity(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 
 void test_signbit_negative_infinity(){
@@ -122,5 +157,10 @@ void test_signbit_negative_infinity(){
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
 // LLVM: %[[V6:[0-9]+]] = icmp slt i[[#BITS]] %[[V5]], 0
 // LLVM: %[[V7:[0-9]+]] = zext i1 %[[V6]] to i{{[0-9]+}}
+
+// OGCG: %{{[0-9]+}} = load double, ptr %[[V0:[a-zA-Z0-9]+]]
+// OGCG: %{{[0-9]+}} = bitcast double %{{[0-9]+}} to i{{[0-9]+}}
+// OGCG: %{{[0-9]+}} = icmp slt i{{[0-9]+}} %{{[0-9]+}}, 0
+// OGCG: %{{[0-9]+}} = zext i1 %{{[0-9]+}} to i{{[0-9]+}}
 }
 ```

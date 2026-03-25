@@ -24,6 +24,12 @@ build/bin/llvm-lit ../clang/test/CIR/<test-file>
 clang -fclangir -emit-cir <C/C++ filename>
 ```
 
+### Format LLVM-Project Code
+
+```bash
+clang-format -i -style=llvm file.cpp
+```
+
 ## File to change
 
 - clang/lib/CIR/Lowering/DirectToLLVM/LowerToLLVM.cpp

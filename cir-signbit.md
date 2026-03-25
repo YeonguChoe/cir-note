@@ -15,5 +15,13 @@
 ## builtin-signbit.c
 
 ```c
+// RUN: %clang_cc1 -triple x86_64-unknown-linux-gnu -fclangir -emit-cir %s -o %t.cir
+// RUN: FileCheck %s --check-prefix=CIR --input-file %t.cir
 
+void test_signbit_zero(){
+  double positiveZero = 0.0;
+  __builtin_signbit(positiveZero);
+// CIR: %[[CONST:.*]] = cir.const #cir.fp<0.000000e+00> : !cir.double
+// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+}
 ```

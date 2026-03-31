@@ -14,7 +14,7 @@ cmake -S llvm \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DLLVM_ENABLE_PROJECTS="clang;mlir" \
     -DLLVM_USE_LINKER=lld \
-    -DLLVM_TARGETS_TO_BUILD="host" \
+    -DLLVM_TARGETS_TO_BUILD="AArch64;X86;host" \
     -DCLANG_ENABLE_CIR=ON
 ```
 

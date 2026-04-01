@@ -26,9 +26,10 @@
 void test_signbit_positive_zero(){
   double positiveZero = +0.0;
   int result = __builtin_signbit(positiveZero);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["positiveZero", init]
+// CIR: cir.const #cir.fp<0.000000e+00> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
@@ -44,8 +45,8 @@ void test_signbit_positive_zero(){
 void test_signbit_negative_zero(){
   double negativeZero = -0.0;
   int result = __builtin_signbit(negativeZero);
-// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["positiveZero", init]
-// CIR: cir.const #cir.fp<0.000000e+00> : !cir.double
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["negativeZero", init]
+// CIR: cir.const #cir.fp<-0.000000e+00> : !cir.double
 // CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
 // CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
@@ -63,9 +64,10 @@ void test_signbit_negative_zero(){
 void test_signbit_positive_number(){
   double positiveNumber = 1.0;
   int result = __builtin_signbit(positiveNumber);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["positiveNumber", init]
+// CIR: cir.const #cir.fp<1.000000e+00> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
@@ -81,9 +83,10 @@ void test_signbit_positive_number(){
 void test_signbit_negative_number(){
   double negativeNumber = -1.0;
   int result = __builtin_signbit(negativeNumber);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["negativeNumber", init]
+// CIR: cir.const #cir.fp<-1.000000e+00> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
@@ -99,9 +102,10 @@ void test_signbit_negative_number(){
 void test_signbit_positive_nan(){
   double positiveNan = +__builtin_nan("");
   int result = __builtin_signbit(positiveNan);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["positiveNan", init]
+// CIR: cir.const #cir.fp<0x7FF8000000000000> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
@@ -117,9 +121,10 @@ void test_signbit_positive_nan(){
 void test_signbit_negative_nan(){
   double negativeNan = -__builtin_nan("");
   int result = __builtin_signbit(negativeNan);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["negativeNan", init]
+// CIR: cir.const #cir.fp<0xFFF8000000000000> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
@@ -135,9 +140,10 @@ void test_signbit_negative_nan(){
 void test_signbit_positive_infinity(){
   double positiveInfinity = +__builtin_inf();
   int result = __builtin_signbit(positiveInfinity);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["positiveInfinity", init]
+// CIR: cir.const #cir.fp<0x7FF0000000000000> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]
@@ -153,9 +159,10 @@ void test_signbit_positive_infinity(){
 void test_signbit_negative_infinity(){
   double negativeInfinity = -__builtin_inf();
   int result = __builtin_signbit(negativeInfinity);
-// CIR: %[[ALLOCA:.*]] = cir.alloca !cir.double
-// CIR: %[[CONST:.*]] = cir.const #cir.fp<{{.*}}> : !cir.double
-// CIR: cir.store align({{[0-9]+}}) %[[CONST]], %[[ALLOCA]] : !cir.double, !cir.ptr<!cir.double>
+// CIR: cir.alloca !cir.double, !cir.ptr<!cir.double>, ["negativeInfinity", init]
+// CIR: cir.const #cir.fp<0xFFF0000000000000> : !cir.double
+// CIR: cir.signbit {{.*}} : !cir.double -> !cir.bool
+// CIR: cir.cast bool_to_int {{.*}} : !cir.bool -> !s32i
 
 // LLVM: %[[V4:[0-9]+]] = load double, ptr %[[V2:[0-9]+]]
 // LLVM: %[[V5:[0-9]+]] = bitcast double %[[V4]] to i[[#BITS:]]

@@ -43,6 +43,12 @@ clang -fclangir -emit-cir <C/C++ file> -o - | cir-translate --cir-to-llvmir - -o
 clang -fclangir -emit-cir <C/C++ file>
 ```
 
+# C/C++ -> LLVM IR
+
+```bash
+clang -S -emit-llvm <C/C++ file> -o <LLVM IR file>
+```
+
 ### Format LLVM-Project Code
 
 ```bash

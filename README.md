@@ -9,9 +9,11 @@
 cmake -S llvm \
     -B build \
     -G Ninja \
+    -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_BUILD_TYPE=Debug \
+    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
     -DLLVM_USE_LINKER=lld \
     -DLLVM_ENABLE_PROJECTS="clang;lld" \
     -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;X86" \

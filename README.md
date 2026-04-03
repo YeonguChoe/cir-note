@@ -18,28 +18,8 @@ cmake -S llvm \
     -DLLVM_ENABLE_ASSERTIONS=ON
 ```
 
-
-## CIR
 ```bash
-cmake -S llvm \
-    -B build \
-    -G Ninja \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DLLVM_USE_LINKER=lld \
-    -DLLVM_TARGETS_TO_BUILD="host" \
-    -DLLVM_ENABLE_PROJECTS="clang;lld;mlir" \
-    -DLLVM_ENABLE_ASSERTIONS=ON \
-    -DCLANG_ENABLE_CIR=ON
-```
-
-```bash
-ninja -C build clang
-```
-
-```bash
-ninja -j9 && ninja check-clang -j9
+ninja -j$(( $(nproc) / 2 ))
 ```
 
 # Test

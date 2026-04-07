@@ -174,7 +174,7 @@ define void @test_strict_fcmps(float %a, float %b) strictfp {
 
 ```
 
-### Test
+### legalizer-info-validation.mir
 
 ```bash
 # DEBUG-NEXT: G_STRICT_FLDEXP (opcode {{[0-9]+}}): 2 type indices, 0 imm indices

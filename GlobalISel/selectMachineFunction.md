@@ -111,11 +111,8 @@ while BlockSuccessorList is not empty:
 ## unittests/CodeGen/GlobalISel/InstructionSelectTest.cpp
 
 ```cpp
-#include "llvm/CodeGen/GlobalISel/InstructionSelect.h"
-#include "GISelMITest.h"
-#include "llvm/CodeGen/GlobalISel/InstructionSelector.h"
-namespace {
-struct CustomISel : public InstructionSelector {
+class CustomISel : public InstructionSelector {
+public:
   bool select(MachineInstr &MI) override {
     static bool Triggered = false;
     if (!Triggered) {
@@ -128,6 +125,7 @@ struct CustomISel : public InstructionSelector {
   }
   void setupGeneratedPerFunctionState(MachineFunction &) override {}
 };
+
 TEST_F(AArch64GISelMITest, NewBlockWhileInstructionSelection) {
   setUp(R"(
    $x0 = COPY %2(s64)
@@ -143,29 +141,4 @@ TEST_F(AArch64GISelMITest, NewBlockWhileInstructionSelection) {
 }
 } // namespace
 
-```
-
-## unittests/CodeGen/GlobalISel/CMakeLists.txt
-
-```cpp
-add_llvm_unittest(GlobalISelTests
-  IRTranslatorBF16Test.cpp
-  ConstantFoldingTest.cpp
-  CSETest.cpp
-  GIMatchTableExecutorTest.cpp
-  LegalizerTest.cpp
-  LegalizerHelperTest.cpp
-  LegalizerInfoTest.cpp
-  MachineIRBuilderTest.cpp
-  GISelMITest.cpp
-  PatternMatchTest.cpp
-  KnownBitsTest.cpp
-  KnownFPClassTest.cpp
-  KnownBitsVectorTest.cpp
-  GISelUtilsTest.cpp
-  GISelAliasTest.cpp
-  CallLowering.cpp
-  InstructionSelectTest.cpp
-  InstructionSelectionTest.cpp
-  )
 ```

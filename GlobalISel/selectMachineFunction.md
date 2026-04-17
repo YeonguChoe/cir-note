@@ -26,6 +26,7 @@ while BlockSuccessorList is not empty:
 ## lib/CodeGen/GlobalISel/InstructionSelect.cpp
 
 ```cpp
+#include "llvm/CodeGen/GlobalISel/InstructionSelect.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/DenseSet.h"
 ...

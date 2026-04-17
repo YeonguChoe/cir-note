@@ -31,7 +31,6 @@
       MachineBasicBlock::succ_iterator &CurrentBlockSuccessorIterator =
           BlockSuccessorList.back().second;
 
-      // If there are unvisited successors, descend into them first.
       if (CurrentBlockSuccessorIterator != CurrentBlock->succ_end()) {
         MachineBasicBlock *CurrentBlockSuccessor =
             *CurrentBlockSuccessorIterator++;
@@ -39,9 +38,6 @@
         continue;
       }
 
-      // All successors visited — select this block.
-      // Snapshot vreg register-class/bank state before selection so we can
-      // restore it if new blocks are introduced during selection.
       DenseMap<Register, RegClassOrRegBank> VirtualRegisterCache;
       for (const MachineInstr &Instruction : *CurrentBlock)
         for (const MachineOperand &Operand : Instruction.operands())
